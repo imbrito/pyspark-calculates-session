@@ -146,5 +146,5 @@ Experimente outras opções:
 - Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivo e salvando os resultados 
 como `JSON`: `$ python calculates_session.py -a -w -f 5`
 
-- Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivo e salvando os resultados 
+- Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivo e exibindo os resultados 
 como `JSON` e `table`: `$ python calculates_session.py -a -t -f 5`
