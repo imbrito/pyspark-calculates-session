@@ -20,8 +20,8 @@ Para correta execução instale as dependências abaixo:
 - `Virtualenv: 16.4.3+`
 - `Wget: 1.17.1+`
 
-1. clone o repositório: `$ git clone git@github.com:imbrito/grupozap.git`.
-2. acesse a pasta do projeto: `$ cd grupozap`.
+1. clone o repositório: `$ git clone git@github.com:imbrito/pyspark-calculates-session.git`.
+2. acesse a pasta do projeto: `$ cd pyspark-calculates-session`.
 3. execute: `$ make install`. Serão executadas as seguintes ações:
     - será iniciado o donwload dos arquivos que serão usados durante a solução
     - será criado um ambiente de desenvolvimento virtual para `python`
@@ -46,7 +46,7 @@ A estrutura do projeto, após a execução do comando: `$ make install`.
 
 ## Executando o pipeline
 
-- acesse a pasta do projeto: `$ cd grupozap`.
+- acesse a pasta do projeto: `$ cd pyspark-calculates-session`.
 - ative o ambiente virtual: `$ source venv/bin/activate`.
 
 O pipeline consiste na execução de um `script` baseado em `PySpark`, API Python para o Apache Spark. Acesse a documentação, 
@@ -77,7 +77,7 @@ Argumentos Opicionais:
 
 ### Exemplos 
 
-- Calcular apenas sessões para `browser_family` usando apenas 1 arquivo: `$ python calculates_session.py -b -f 1`
+- Calcular apenas sessões para `browser_family` usando apenas 1 arquivo: `$ python calculates_session.py -b`
 
 1. sessions by: browser_family in JSON format (exemplo com até 10 regitros)
 
@@ -144,7 +144,7 @@ only showing top 10 rows
 Experimente outras opções:
 
 - Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivo e salvando os resultados 
-como `JSON`: `$ python calculates_session.py -a -w`
+como `JSON`: `$ python calculates_session.py -a -w -f 5`
 
 - Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivo e salvando os resultados 
-como `JSON` e `table`: `$ python calculates_session.py -a -t`
+como `JSON` e `table`: `$ python calculates_session.py -a -t -f 5`
