@@ -79,7 +79,7 @@ Argumentos Opicionais:
 
 - Calcular apenas sessões para `browser_family` usando apenas 1 arquivo: `$ python calculates_session.py -b`
 
-1. sessions by: browser_family in JSON format (exemplo com até 10 regitros)
+1. sessions by: browser_family in JSON format (exemplo com 10 regitros aleatórios)
 
 ```JSON
 {"Chrome Mobile":326714,"Chrome":295874,"Mobile Safari":79196,"Other":63887,"Firefox":23335,"Facebook":18085,"Edge":10291,"Chrome Mobile iOS":8574,"Safari":6346,"IE":4586}
@@ -105,7 +105,7 @@ Argumentos Opicionais:
 
 only showing top 10 rows
 
-2. sessions by: os_family in JSON format (exemplo com até 10 regitros)
+2. sessions by: os_family in JSON format (exemplo com 10 regitros aleatórios)
 
 ```JSON
 {"Android":706744,"Windows 10":310517,"Windows 7":260436,"iOS":179824,"Other":129152,"Windows 8.1":45097,"Mac OS X":33835,"Windows 8":6820,"Windows XP":6561,"Linux":5975} 
@@ -114,7 +114,7 @@ only showing top 10 rows
 - Calcular apenas sessões para `device_family` usando apenas 1 arquivo e salvando o resultado como `JSON`: 
 `$ python calculates_session.py -d -w`
 
-1. sessions by: device_family in JSON format (exemplo com até 10 regitros)
+1. sessions by: device_family in JSON format (exemplo com 10 regitros aleatórios)
 
 ```JSON
 {"Other":399092,"Generic Smartphone":248395,"iPhone":80719,"iPad":7556,"LG-M250":6147,"Samsung SM-G610M":4403,"LG-K430":4319,"Nexus 5":4139,"Samsung SM-J500M":3687,"Samsung SM-G570M":3343} 
@@ -143,8 +143,8 @@ only showing top 10 rows
 
 Experimente outras opções:
 
-- Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivo e salvando os resultados 
+- Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivos e salvar os resultados 
 como `JSON`: `$ python calculates_session.py -a -w -f 5`
 
-- Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivo e exibindo os resultados 
+- Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivos e exibir os resultados 
 como `JSON` e `table`: `$ python calculates_session.py -a -t -f 5`
