@@ -42,11 +42,14 @@ def read_args():
 
 
 def sessions_by_column(df, column, args):
+    print("{datetime} {level} calculates sessions by: {column}.".format(column=column, **format_logger()))
     sessions = df.groupBy(column) \
                  .agg(F.count(df.anonymous_id).alias("sessions")) \
                  .orderBy("sessions", ascending=False)
         
-    cols = list(map(lambda x: x.asDict()[column], sessions.select(column).collect()))
+    row = sessions.agg(F.collect_set(column).alias(column)).first()
+    cols = sorted(list(map(lambda attr: attr, row.__getattr__(column))))
+
     sessions = sessions.withColumn("type", F.lit(column))
     pivot = sessions.groupBy("type").pivot(column, cols).max("sessions") 
     
@@ -55,7 +58,8 @@ def sessions_by_column(df, column, args):
         sessions.drop("type").show(args.show, truncate=False)
     
     print("{datetime} {level} show sessions by: {column} in JSON format.".format(column=column, **format_logger()))
-    print("{} \n".format(pivot.drop("type").toJSON().first()))
+    to_json = pivot.drop("type").toJSON().first()
+    print("{} \n".format(to_json))
 
     if args.write:
         print("{datetime} {level} write sessions by: {column} in JSON format.".format(column=column, **format_logger()))
@@ -68,13 +72,14 @@ if __name__ == "__main__":
         args = read_args()  
         data = [ "{pwd}/data/part-0000{x}.json.gz".format(pwd=PWD, x=y) for y in range(args.files) ]
 
-        print("{datetime} {level} Build a new instance.".format(**format_logger()))
+        print("{datetime} {level} build a new instance.".format(**format_logger()))
         spark = SparkSession.builder \
                             .appName("Test Spark") \
-                            .getOrCreate()    
+                            .getOrCreate()
 
         print("{datetime} {level} read data: {data}.".format(data=data, **format_logger()))
         df = spark.read.json(path=data, schema=schema())
+        print("{datetime} {level} rows count: {rows}.".format(rows=df.count(), **format_logger()))
         
         # -1800 seconds = -60 seconds * 30 minutes
         w = Window.partitionBy("anonymous_id").orderBy("device_sent_timestamp").rangeBetween(start=-1800, end=0)
@@ -87,6 +92,7 @@ if __name__ == "__main__":
         
         # filter df by first event on session
         df = df.filter(df.events_on_session == 1)
+        print("{datetime} {level} distinct sessions: {rows}.".format(rows=df.count(), **format_logger()))
 
         if args.all or args.browser:
             sessions_by_column(df, "browser_family", args)
@@ -97,7 +103,7 @@ if __name__ == "__main__":
         if args.all or args.device:
             sessions_by_column(df, "device_family", args)
         
-        print("{datetime} {level} Finished.".format(**format_logger()))
+        print("{datetime} {level} finished.".format(**format_logger()))
 
     except Exception as e:
-        print("{datetime} {level} Failed: {msg}.".format(**format_logger("ERROR"), msg=str(e)))
+        print("{datetime} {level} failed: {msg}.".format(**format_logger("ERROR"), msg=str(e)))
