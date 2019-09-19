@@ -1,2 +1,2 @@
-ipython
-pyspark
+ipython==7.8.0
+pyspark==2.4.4
