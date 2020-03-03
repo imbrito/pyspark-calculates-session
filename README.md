@@ -5,7 +5,7 @@ Solução para o desafio proposto, em: [Data Engineer Challenge](CHALLENGE.md).
 ## Estrutura do Repositório
 
 ```
-    ├── calculates_session.py
+    ├── run.py
     ├── LICENSE
     ├── Makefile
     ├── README.md
@@ -30,7 +30,7 @@ Para correta execução instale as dependências abaixo:
 A estrutura do projeto, após a execução do comando: `$ make install`. 
 
 ```
-    ├── calculates_session.py
+    ├── run.py
     ├── data
     │   ├── part-00000.json.gz
     │   ├── part-00001.json.gz
@@ -54,10 +54,10 @@ através de: https://spark.apache.org/docs/latest/api/python/pyspark.sql.html.
 
 ### Opções de execução
 
-Para saber as opções disponíveis: `$ python calculates_session.py -h`
+Para saber as opções disponíveis: `$ python run.py -h`
 
 ```
-usage: calculates_session.py [-h] [-b] [-o] [-d] [-a] [-t] [-w]
+usage: run.py [-h] [-b] [-o] [-d] [-a] [-t] [-w]
                              [-f {1,2,3,4,5}] [-s SHOW]
 ```
 
@@ -77,7 +77,7 @@ Argumentos Opicionais:
 
 ### Exemplos 
 
-- Calcular apenas sessões para `browser_family` usando apenas 1 arquivo: `$ python calculates_session.py -b`
+- Calcular apenas sessões para `browser_family` usando apenas 1 arquivo: `$ python run.py -b`
 
 1. sessions by: browser_family in JSON format (exemplo com 10 regitros aleatórios)
 
@@ -97,7 +97,7 @@ Argumentos Opicionais:
 ```
 
 - Calcular apenas sessões para `os_family` usando apenas 2 arquivos e exibindo o resultado como `JSON` e `table` com 10 `rows`: 
-`$ python calculates_session.py -o -t -s 10 -f 2`
+`$ python run.py -o -t -s 10 -f 2`
 
 1. sessions by: os_family in table format
                                                           
@@ -134,7 +134,7 @@ only showing top 10 rows
 ```
 
 - Calcular apenas sessões para `device_family` usando apenas 1 arquivo e salvando o resultado como `JSON`: 
-`$ python calculates_session.py -d -w`
+`$ python run.py -d -w`
 
 1. sessions by: device_family in JSON format (exemplo com 10 regitros aleatórios)
 
@@ -156,7 +156,7 @@ only showing top 10 rows
 2. estrutura do projeto após salvar o resultado como `JSON`
 
 ```
-    ├── calculates_session.py
+    ├── run.py
     ├── data
     │   ├── part-00000.json.gz
     │   ├── part-00001.json.gz
@@ -177,7 +177,7 @@ only showing top 10 rows
 Experimente outras opções:
 
 - Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivos e salvar os resultados 
-como `JSON`: `$ python calculates_session.py -a -w -f 5`
+como `JSON`: `$ python run.py -a -w -f 5`
 
 - Calcular sessões para `browser_family`, `os_family` e `device_family` usando todos os arquivos e exibir os resultados 
-como `JSON` e `table`: `$ python calculates_session.py -a -t -f 5`
+como `JSON` e `table`: `$ python run.py -a -t -f 5`
