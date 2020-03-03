@@ -4,9 +4,14 @@ from pyspark.sql import SparkSession, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import StructField, StructType, StringType, LongType
 from datetime import datetime
-import argparse, os
+import argparse, logging, os
+
+
+logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", datefmt="%y/%m/%d %H:%M:%S", level=logging.INFO)
+logger = logger = logging.getLogger(__name__)
 
 PWD = os.getenv("PWD")
+
 
 def schema():
     return StructType([StructField("anonymous_id", StringType(), True),
@@ -15,10 +20,6 @@ def schema():
                        StructField("browser_family", StringType(), True),
                        StructField("os_family", StringType(), True),
                        StructField("device_family", StringType(), True),])
-
-
-def format_logger(level="INFO"):
-    return {"datetime": datetime.now().strftime("%y/%m/%d %H:%M:%S"), "level": level}
 
 
 def check_positive(value):
@@ -42,7 +43,7 @@ def read_args():
 
 
 def sessions_by_column(df, column, args):
-    print("{datetime} {level} calculates sessions by: {column}.".format(column=column, **format_logger()))
+    logger.info("calculates sessions by: {column}.".format(column=column))
     sessions = df.groupBy(column) \
                  .agg(F.count(df.anonymous_id).alias("sessions")) \
                  .orderBy("sessions", ascending=False)
@@ -54,32 +55,31 @@ def sessions_by_column(df, column, args):
     pivot = sessions.groupBy("type").pivot(column, cols).max("sessions") 
     
     if args.table:
-        print("{datetime} {level} show sessions by: {column} in table format.".format(column=column, **format_logger()))
+        logger.info("show sessions by: {column} in table format.".format(column=column))
         sessions.drop("type").show(args.show, truncate=False)
     
-    print("{datetime} {level} show sessions by: {column} in JSON format.".format(column=column, **format_logger()))
+    logger.info("show sessions by: {column} in JSON format.".format(column=column))
     to_json = pivot.drop("type").toJSON().first()
     print("{} \n".format(to_json))
 
     if args.write:
-        print("{datetime} {level} write sessions by: {column} in JSON format.".format(column=column, **format_logger()))
+        logger.info("write sessions by: {column} in JSON format.".format(column=column))
         pivot.drop("type").coalesce(1).write.json(path="{pwd}/results/{column}".format(pwd=PWD,column=column),mode="overwrite",compression="gzip")
 
 
-if __name__ == "__main__":
-
+def run():
     try:    
         args = read_args()  
         data = [ "{pwd}/data/part-0000{x}.json.gz".format(pwd=PWD, x=y) for y in range(args.files) ]
 
-        print("{datetime} {level} build a new instance.".format(**format_logger()))
         spark = SparkSession.builder \
-                            .appName("Test Spark") \
+                            .appName("Calculates Sessions Spark") \
                             .getOrCreate()
-
-        print("{datetime} {level} read data: {data}.".format(data=data, **format_logger()))
+        
+        logger.info("build a new instance.")
+        logger.info("read data: {data}.".format(data=data))
         df = spark.read.json(path=data, schema=schema())
-        print("{datetime} {level} rows count: {rows}.".format(rows=df.count(), **format_logger()))
+        logger.info("rows count: {rows}.".format(rows=df.count()))
         
         # -1800 seconds = -60 seconds * 30 minutes
         w = Window.partitionBy("anonymous_id").orderBy("device_sent_timestamp").rangeBetween(start=-1800, end=0)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         
         # filter df by first event on session
         df = df.filter(df.events_on_session == 1)
-        print("{datetime} {level} distinct sessions: {rows}.".format(rows=df.count(), **format_logger()))
+        logger.info("distinct sessions: {rows}.".format(rows=df.count()))
 
         if args.all or args.browser:
             sessions_by_column(df, "browser_family", args)
@@ -103,7 +103,10 @@ if __name__ == "__main__":
         if args.all or args.device:
             sessions_by_column(df, "device_family", args)
         
-        print("{datetime} {level} finished.".format(**format_logger()))
+        logger.info("finished.")
 
     except Exception as e:
-        print("{datetime} {level} failed: {msg}.".format(**format_logger("ERROR"), msg=str(e)))
+        logger.error("failed: {msg}.".format(msg=e))
+
+if __name__ == "__main__":
+    run()
